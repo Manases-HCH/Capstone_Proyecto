@@ -21,7 +21,6 @@ import {
   Calendar
 } from 'lucide-react';
 import { AIStudyPlans } from './AIStudyPlans';
-
 interface User {
   id: string;
   email: string;

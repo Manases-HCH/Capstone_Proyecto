@@ -4,6 +4,7 @@ import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
+import { AIChatModal } from "./AIChatModal";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../components/ui/dialog';
@@ -25,6 +26,7 @@ import {
   Settings,
   Send
 } from 'lucide-react';
+
 
 interface StudyPlan {
   id: string;
@@ -63,7 +65,7 @@ export function AIStudyPlans() {
   const [isEditing, setIsEditing] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [showExplanation, setShowExplanation] = useState(false);
-
+  const [chatOpen, setChatOpen] = useState(false);
   // Mock data
   const mockPlans: StudyPlan[] = [
     {
@@ -203,10 +205,17 @@ export function AIStudyPlans() {
           <h2 className="text-2xl font-semibold text-[#800020]">Planes de Estudio con IA</h2>
           <p className="text-gray-600">Genera, personaliza y aprueba planes de estudio con inteligencia artificial</p>
         </div>
-        <Button className="bg-[#007bff] hover:bg-[#0056b3]">
-          <Brain className="h-4 w-4 mr-2" />
-          Generar Nuevo Plan
-        </Button>
+        <Button
+  className="bg-[#007bff] hover:bg-[#0056b3]"
+  onClick={() => setChatOpen(true)}
+>
+  <Brain className="h-4 w-4 mr-2" />
+  Generar Nuevo Plan
+</Button>
+
+{/* Modal del chatbot IA */}
+<AIChatModal open={chatOpen} onClose={() => setChatOpen(false)} />
+
       </div>
 
       {/* Filters */}
