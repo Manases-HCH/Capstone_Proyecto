@@ -1,2 +1,16 @@
 node_modules
-src/Backend/venv
+# Ignorar entornos virtuales
+src/Backend/venv/
+
+# Archivos de Python
+__pycache__/
+*.pyc
+
+# Archivos grandes o innecesarios
+*.dll
+*.exe
+*.zip
+*.tar
+*.gz
+*.pkl
+*.pt
