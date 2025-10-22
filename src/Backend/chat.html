@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot Estudiantil</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #chat-container {
+      width: 420px;
+      background: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+    }
+    #chat-header {
+      font-size: 18px;
+      font-weight: bold;
+      color: #0d6efd;
+      text-align: center;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #eee;
+    }
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: #0d6efd #f1f1f1;
+    }
+    #messages::-webkit-scrollbar {
+      width: 8px;
+    }
+    #messages::-webkit-scrollbar-thumb {
+      background: #0d6efd;
+      border-radius: 4px;
+    }
+    .msg {
+      padding: 10px 14px;
+      border-radius: 18px;
+      max-width: 80%;
+      font-size: 14px;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+    .user {
+      background: #0d6efd;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .bot {
+      background: #f1f1f1;
+      color: #333;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    #input-box {
+      display: flex;
+      margin-top: 10px;
+    }
+    #msg-input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.3s;
+    }
+    #msg-input:focus {
+      border-color: #0d6efd;
+    }
+    #send-btn {
+      padding: 0 20px;
+      margin-left: 8px;
+      border: none;
+      background: #0d6efd;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    #send-btn:hover {
+      background: #0b5ed7;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <div id="chat-header">💬 Chatbot Estudiantil</div>
+    <div id="messages"></div>
+    <div id="input-box">
+      <input type="text" id="msg-input" placeholder="Escribe un mensaje... Ej: plan 3" />
+      <button id="send-btn">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+    const messagesDiv = document.getElementById("messages");
+    const input = document.getElementById("msg-input");
+    const sendBtn = document.getElementById("send-btn");
+
+    function addMessage(text, sender) {
+      const div = document.createElement("div");  
+      div.classList.add("msg", sender);
+      div.innerText = text;
+      messagesDiv.appendChild(div);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const msg = input.value.trim();
+      if (!msg) return;
+      addMessage(msg, "user");
+      input.value = "";
+
+      try {
+        let res, data;
+        if (msg.toLowerCase().startsWith("plan")) {
+          const id = msg.split(" ")[1];
+          if (!id) {
+            addMessage("⚠️ Debes escribir un ID de estudiante. Ejemplo: plan 3", "bot");
+            return;
+          }
+          res = await fetch(`http://127.0.0.1:8000/chatbot/plan-ia/${id}`);
+          data = await res.json();
+
+          if (data.plan_estudio) {
+          // Mostrar nombre, debilidades y calificación
+          const nombre = data.nombre || `Estudiante ${id}`;
+          const calificacion = data.calificacion ?? "Sin calificación";
+
+          // Mapear debilidades a texto
+          let debilidadesText = "No tiene debilidades registradas";
+          if (data.debilidades && data.debilidades.length > 0) {
+              debilidadesText = data.debilidades
+                  .map(d => `📌 ${d.competencia} (nota: ${d.nota})`)
+                  .join("\n");
+          }
+
+          addMessage(
+              `📘 Plan de estudio para ${nombre}:\n` +
+              `📝 Calificación actual: ${calificacion}\n` +
+              `⚠️ Debilidades:\n${debilidadesText}\n\n` +
+              `${data.plan_estudio}`,
+              "bot"
+          );
+          }
+        else {
+            addMessage(data.mensaje || "⚠️ No encontré información para ese estudiante.", "bot");
+          }
+        } else {
+          res = await fetch(`http://127.0.0.1:8000/chatbot/?msg=${encodeURIComponent(msg)}`);
+          data = await res.json();
+          addMessage(data.respuesta, "bot");
+        }
+      } catch (err) {
+        addMessage("⚠️ Error conectando con la API", "bot");
+      }
+    }
+
+
+    sendBtn.addEventListener("click", sendMessage);
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>

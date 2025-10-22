@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reporte de Notas con IA</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: linear-gradient(135deg,#f9fafb,#eef2ff); min-height:100vh; }
+    .card { border-radius: 16px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+    .hero { padding: 1.5rem; }
+    .logo { font-weight:700; letter-spacing:1px; color:#4338ca; }
+    footer { font-size:0.85rem; color:#6b7280; }
+    .riesgo { color:#dc2626; font-weight:bold; }
+    .no-riesgo { color:#16a34a; font-weight:bold; }
+    .file-input { border-radius: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <div class="card p-4">
+          <div class="d-flex align-items-center justify-content-between hero">
+            <div>
+              <div class="logo h4">📊 Sistema de Reporte de Notas con IA</div>
+              <p class="mb-0 text-muted">Docentro, por favor suba su archivo <strong>.docx</strong> con las notas y obtén análisis, predicciones y un reporte en Excel.</p>
+            </div>
+            <div>
+              <img src="https://cdn-icons-png.flaticon.com/512/3563/3563750.png" alt="icon" width="60" style="opacity:.9">
+            </div>
+          </div>
+
+          <hr>
+
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <div class="alert alert-warning">
+                {% for msg in messages %} <div>{{ msg }}</div> {% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
+
+          <form method="POST" enctype="multipart/form-data" class="row g-3 align-items-center">
+            <div class="col-md-9">
+              <input class="form-control file-input" name="file" type="file" accept=".docx" required>
+            </div>
+            <div class="col-md-3 d-grid">   
+              <button class="btn btn-primary btn-lg" type="submit">Subir y Analizar</button>
+            </div>
+            <div class="col-12 text-muted small mt-1">El archivo debe tener una columna de nombres y columnas de notas (A/B/C).</div>
+          </form>
+
+          {% if resultado %}
+            <hr>
+            <div class="mt-3">
+              <h5 class="mb-3">🤖 Precisión del modelo IA: <span class="text-primary">{{ resultado.accuracy }}%</span></h5>
+              <div class="table-responsive">
+                {{ resultado.tabla_html | safe }}
+              </div>
+              <div class="mt-3 d-grid">
+                <a href="{{ url_for('descargar') }}" class="btn btn-success btn-lg">📥 Descargar Excel</a>
+              </div>
+            </div>
+          {% endif %}
+
+          <hr>
+          <footer class="mt-2 text-center">
+            <div>UPN - Pruebas Python · Proyecto de IA</div>
+            <div class="small">Este sistema simulara predicciones con un Árbol de Decisión entrenado sobre tus datos.</div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Resaltar "En riesgo" y "No en riesgo" con colores
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll("td").forEach(td => {
+        if (td.textContent.includes("En riesgo")) {
+          td.classList.add("riesgo");
+        } else if (td.textContent.includes("No en riesgo")) {
+          td.classList.add("no-riesgo");
+        }
+      });
+    });
+  </script>
+</body>
+</html>
