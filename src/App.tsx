@@ -24,13 +24,13 @@ import {
   X,
   RefreshCw
 } from 'lucide-react';
-import { AIStudyPlans } from './components/AIStudyPlans';
-import { LandingPage } from './components/LandingPage';
-import { StudentResults } from './components/StudentResults';
-import { TeacherPanel } from './components/TeacherPanel';
-import { AdminDashboard } from './components/AdminDashboard';
-import { UserManagement } from './components/UserManagement';
-import { PasswordRecovery } from './components/PasswordRecovery';
+import { AIStudyPlans } from './pages/Docente/AIStudyPlans';
+import { LandingPage } from './pages/Login/LandingPage';
+import { StudentResults } from './pages/Estudiante/StudentResults';
+import { TeacherPanel } from './pages/Docente/TeacherPanel';
+import { AdminDashboard } from './pages/Admin/AdminDashboard';
+import { UserManagement } from './pages/Admin/UserManagement';
+import { PasswordRecovery } from './pages/Login/PasswordRecovery';
 
 // Types
 interface User {
