@@ -8,7 +8,7 @@ import { School, Search, LogIn, Shield, AlertTriangle } from 'lucide-react';
 
 interface LandingPageProps {
   onLogin: (email: string, password: string) => void;
-  onDNISearch: (dni: string) => boolean;
+  onDNISearch: (dni: string) => Promise<boolean>; // ✅ Correcto
   onForgotPassword: () => void;
 }
 

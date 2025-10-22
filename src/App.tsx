@@ -40,6 +40,13 @@ interface User {
   name: string;
 }
 
+interface Evaluation {
+  courseName: string;
+  competencyName: string;
+  grade: string | null;
+  period: string | null;
+}
+
 interface Student {
   dni: string;
   name: string;
@@ -47,15 +54,7 @@ interface Student {
   grade: string;
   section: string;
   period: string;
-  courses: Course[];
-}
-
-interface Course {
-  name: string;
-  note1: number | null;
-  note2: number | null;
-  note3: number | null;
-  average: number | null;
+  evaluations: Evaluation[];
 }
 
 function App() {
@@ -64,54 +63,83 @@ function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [searchedStudent, setSearchedStudent] = useState<Student | null>(null);
 
-  // Mock data
-  const mockStudents: Student[] = [
-    {
-      dni: '12345678',
-      name: 'Ana María García López',
-      code: 'EST2024001',
-      grade: '5to Grado',
-      section: 'A',
-      period: '2024-I',
-      courses: [
-        { name: 'Matemática', note1: 18, note2: 16, note3: 17, average: 17 },
-        { name: 'Comunicación', note1: 15, note2: 17, note3: 16, average: 16 },
-        { name: 'Ciencias', note1: 19, note2: 18, note3: 19, average: 19 },
-        { name: 'Historia', note1: 16, note2: 15, note3: 17, average: 16 },
-        { name: 'Arte', note1: 20, note2: 18, note3: 19, average: 19 }
-      ]
-    }
-  ];
+  const handleLogin = async (email: string, password: string) => {
+  try {
+    const resp = await fetch("http://localhost:8000/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        correo: email,
+        password: password,
+      }),
+    });
 
-  const handleLogin = (email: string, password: string) => {
-    // Mock authentication
-    if (email === 'docente@swiaape.edu.pe') {
-      setCurrentUser({
-        id: '1',
-        email: email,
-        role: 'teacher',
-        name: 'Prof. Juan Carlos Mendoza'
-      });
-      setCurrentView('teacher');
-    } else if (email === 'admin@swiaape.edu.pe') {
-      setCurrentUser({
-        id: '2',
-        email: email,
-        role: 'admin',
-        name: 'María Elena Vásquez'
-      });
-      setCurrentView('admin');
+    if (!resp.ok) {
+      const errorData = await resp.json();
+      alert(errorData.detail || "Credenciales incorrectas");
+      return;
     }
-  };
 
-  const handleDNISearch = (dni: string) => {
-    const student = mockStudents.find(s => s.dni === dni);
-    if (student) {
-      setSearchedStudent(student);
-      setCurrentView('student-results');
+    const data = await resp.json();
+
+    // ✅ Guarda los datos del usuario logueado
+    setCurrentUser({
+      id: data.idUsuario,
+      email: data.correo,
+      role:
+        data.rol.toLowerCase() === "docente"
+          ? "teacher"
+          : data.rol.toLowerCase() === "admin"
+          ? "admin"
+          : "student",
+      name: data.nombre,
+    });
+
+    // ✅ Redirección según rol
+    if (data.rol.toLowerCase() === "docente") {
+      setCurrentView("teacher");
+    } else if (data.rol.toLowerCase() === "admin") {
+      setCurrentView("admin");
+    } else {
+      setCurrentView("student-results");
     }
-    return !!student;
-  };
+  } catch (error) {
+    console.error("Error al conectar con el backend:", error);
+    alert("Error de conexión con el servidor");
+  }
+};
+
+
+  const handleDNISearch = async (dni: string) => {
+  try {
+    const resp = await fetch(`http://localhost:8000/estudiantes/by-dni/${dni}`);
+    if (resp.status === 404) {
+      alert("DNI no encontrado");
+      return false;
+    }
+    const data = await resp.json();
+
+    setSearchedStudent({
+      dni: data.dni,
+      name: data.name,
+      code: data.code,
+      grade: data.grade,
+      section: data.section,
+      period: data.period,
+      evaluations: data.evaluations, // <-- viene directamente del backend
+    });
+
+    setCurrentView('student-results');
+    return true;
+  } catch (err) {
+    console.error("Error consultando backend:", err);
+    alert("Error al conectar con el servidor.");
+    return false;
+  }
+};
+
 
   const handleLogout = () => {
     setCurrentUser(null);
