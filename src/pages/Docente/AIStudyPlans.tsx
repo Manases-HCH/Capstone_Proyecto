@@ -17,7 +17,7 @@ import {
   RefreshCw, 
   Download, 
   Clock,
-  TrendingUp,
+  TrendingUp, 
   BookOpen,
   Target,
   Users,

@@ -1,12 +1,35 @@
-node_modules
-# Ignorar entornos virtuales
+# ==========================
+# 🧠 ENTORNOS VIRTUALES PYTHON
+# ==========================
+venv/
 src/Backend/venv/
+.env
+.env.*
 
-# Archivos de Python
+# ==========================
+# 🐍 ARCHIVOS PYTHON COMPILADOS
+# ==========================
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 
-# Archivos grandes o innecesarios
+# ==========================
+# ⚙️ CONFIGURACIÓN LOCAL
+# ==========================
+*.sqlite3
+instance/
+db.sqlite3
+*.log
+
+# ==========================
+# 🧩 FASTAPI / UVICORN
+# ==========================
+*.pid
+*.sock
+
+# ==========================
+# 🗃️ ARCHIVOS GRANDES O BINARIOS
+# ==========================
 *.dll
 *.exe
 *.zip
@@ -14,3 +37,42 @@ __pycache__/
 *.gz
 *.pkl
 *.pt
+*.bin
+
+# ==========================
+# 🧰 NODE / REACT FRONTEND
+# ==========================
+node_modules/
+build/
+dist/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+pnpm-lock.yaml
+
+# ==========================
+# 📦 ENTORNOS Y EDITORES
+# ==========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ==========================
+# 📸 CACHÉS / TEMPORALES
+# ==========================
+*.tmp
+*.bak
+*.old
+.DS_Store
+Thumbs.db
+
+# ==========================
+# 🧾 REPORTES / ARCHIVOS DE EXPORTACIÓN
+# ==========================
+*.pdf
+*.xlsx
+*.csv
+*.json

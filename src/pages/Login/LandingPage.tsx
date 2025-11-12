@@ -214,23 +214,6 @@ export function LandingPage({ onLogin, onDNISearch, onForgotPassword }: LandingP
                   </button>
                 </div>
 
-                <div className="bg-blue-50 p-4 rounded-lg mt-6">
-                  <p className="text-sm text-blue-800">
-                    <strong>Usuarios de prueba:</strong>
-                  </p>
-                  <p className="text-xs text-blue-700 mt-1">
-                    Docente: docente@swiaape.edu.pe
-                  </p>
-                  <p className="text-xs text-blue-700">
-                    Admin: admin@swiaape.edu.pe
-                  </p>
-                  <p className="text-xs text-blue-700">
-                    DNI de prueba: 12345678
-                  </p>
-                  <p className="text-xs text-blue-700 mt-2">
-                    <strong>Prueba recuperación:</strong> Usar cualquier email @swiaape.edu.pe
-                  </p>
-                </div>
               </form>
             </CardContent>
           </Card>
@@ -258,7 +241,7 @@ export function LandingPage({ onLogin, onDNISearch, onForgotPassword }: LandingP
             </div>
           </div>
           <div className="text-center mt-6 pt-6 border-t border-gray-300">
-            <p className="text-gray-500">© 2024 SWIAAPE. Todos los derechos reservados.</p>
+            <p className="text-gray-500">© 2025 SWIAAPE. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
